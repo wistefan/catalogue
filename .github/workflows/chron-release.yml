@@ -1,6 +1,6 @@
 name: "Update Tagged Releases"
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
   refresh-modules:
