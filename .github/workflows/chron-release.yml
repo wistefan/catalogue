@@ -15,7 +15,7 @@ jobs:
         fetch-depth: 0 
         ref: releases
         submodules: recursive
-    - name: Merge upstream changes to releases branch
+    - name: Get submodules
       id: submodules
       run: |
         echo "::set-output name=repos:: $(git config --file .gitmodules --get-regexp path | awk '{ print $2 }' | paste -s -d, -)"
@@ -30,16 +30,17 @@ jobs:
       matrix:
         submodules: ${{needs.refresh-modules.outputs.repos}}
 
-      - id: versions
-        uses: wistefan/get-releases-by-semver@master
-        with:
-          versionField: "TAG-NAME"
-          repository: ${{ matrix.submodules }}
+    steps:
+    - id: versions
+      uses: wistefan/get-releases-by-semver@master
+      with:
+        versionField: "TAG-NAME"
+        repository: ${{ matrix.submodules }}
 
-      - id: print
-        run: |
-          echo "Releases for ${{ matrix.submodules }}"
-          echo "${{steps.versions.outputs.releases}}"
+    - id: print
+      run: |
+        echo "Releases for ${{ matrix.submodules }}"
+        echo "${{steps.versions.outputs.releases}}"
     
    
    
