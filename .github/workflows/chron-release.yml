@@ -18,7 +18,9 @@ jobs:
     - name: Get submodules
       id: submodules
       run: |
-        jsonRepos=$(jq -R -s -c 'split("\n")' < $(git config --file .gitmodules --get-regexp path | awk '{ print $2 }'))
+        gitlines=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
+        echo $gitlines
+        jsonRepos=$(jq -R -s -c 'split("\n")' < $gitlines)
         echo $jsonRepos
         echo "::set-output name=repos:: $jsonRepos"
 
