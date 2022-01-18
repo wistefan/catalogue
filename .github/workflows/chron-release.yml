@@ -28,19 +28,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        submodules: ${{fromJson(needs.get-containers.outputs.container-matrix)}}
+        containers: ${{fromJson(needs.get-containers.outputs.container-matrix)}}
 
     steps:
-    - id: versions
-      uses: wistefan/get-releases-by-semver@master
-      with:
-        versionField: "TAG-NAME"
-        repository: ${{ matrix.submodules }}
+      - uses: actions/checkout@v2
 
-    - id: print
-      run: |
-        echo "Releases for ${{ matrix.submodules }}"
-        echo "${{steps.versions.outputs.releases}}"
+      - name: execute check
+        run: |
+          docker/container-scan.sh -p ${{ matrix.containers }}
     
    
    
