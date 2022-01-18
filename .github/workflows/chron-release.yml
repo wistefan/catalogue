@@ -3,11 +3,11 @@ on:
   push:
 
 jobs:
-  refresh-modules:
+  get-containers:
     name: Refresh Release Submodules
     runs-on: ubuntu-latest
     outputs:
-      repo-matrix: ${{ steps.submodules.outputs.repos }}
+      container-matrix: ${{ steps.submodules.outputs.containers }}
     steps:
     - uses: actions/checkout@master
       with:
@@ -15,23 +15,20 @@ jobs:
         fetch-depth: 0 
         ref: releases
         submodules: recursive
-    - name: Get submodules
+
+    - name: Get docker images for submodules
       id: submodules
-      run: |
-        gitlines=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
-        input=$(echo $gitlines | sed “s; *;,;g”)
-        echo $input
-        echo "::set-output name=repos:: [$input]"
+      uses: wistefan/get-submodules@0.0.2
 
   get-releases:
     name: Test releases
     runs-on: ubuntu-latest
-    needs: ["refresh-modules"]
+    needs: ["get-containers"]
 
     strategy:
       fail-fast: false
       matrix:
-        submodules: ${{needs.refresh-modules.outputs.repos}}
+        submodules: ${{fromJson(needs.get-containers.outputs.container-matrix)}}
 
     steps:
     - id: versions
