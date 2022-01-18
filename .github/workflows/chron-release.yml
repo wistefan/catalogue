@@ -18,7 +18,7 @@ jobs:
 
     - name: Get docker images for submodules
       id: submodules
-      uses: wistefan/get-submodules@0.0.2
+      uses: wistefan/get-submodules@master
 
   get-releases:
     name: Test releases
