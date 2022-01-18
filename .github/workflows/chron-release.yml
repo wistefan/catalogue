@@ -19,7 +19,7 @@ jobs:
       id: submodules
       run: |
         gitlines=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
-        input=$(tr -s '[:blank:]' ',' < $gitlines)
+        input=$(echo $gitlines | sed “s; *;,;g”)
         echo $input
         echo "::set-output name=repos:: [$input]"
 
